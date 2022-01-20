@@ -3,21 +3,68 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class MarkdownParse {
+    static public boolean isEscaped(int currentIndex, String markdown){
+        return currentIndex != 0 && markdown.charAt(currentIndex-1) == '\\';
+    }
+    static public int advance(int index, String markdown){
+        while(isEscaped(index, markdown)){
+            index += 2;
+        }
+        return index;
+    }
+    
     public static ArrayList<String> getLinks(String markdown) {
         ArrayList<String> toReturn = new ArrayList<>();
+        
         // find the next [, then find the ], then find the (, then take up to
         // the next )
+        // int currentIndex = 0;
+        // Stack<Character> bracketTracker = new Stack<>();
+        // boolean findLink = false;
+        // while(currentIndex < markdown.length()) {
+        //     char curr = markdown.charAt(currentIndex);
+        //     if (curr == '\\') {
+        //         currentIndex += 2;
+        //         continue;
+        //     } else if (curr == '[') {
+        //         bracketTracker.push(curr);
+        //     } else if (curr == ']') {
+        //         if (!bracketTracker.isEmpty()) {
+        //             bracketTracker.pop();
+        //             findLink = true;
+        //         }
+        //     }
+        // }
         int currentIndex = 0;
         while(currentIndex < markdown.length()) {
-            int nextOpenBracket = markdown.indexOf("[", currentIndex);
-            int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
-            int openParen = markdown.indexOf("(", nextCloseBracket);
-            int closeParen = markdown.indexOf(")", openParen);
+            int nextOpenBracket = 0;
+            int nextCloseBracket = 0;
+            int openParen = 0;
+            int closeParen = 0;
+            int i;
+            currentIndex = advance(currentIndex, markdown);
+
+            nextOpenBracket = markdown.indexOf("[", currentIndex);
+            i = advance(nextOpenBracket, markdown);
+
+            nextCloseBracket = markdown.indexOf("]", i);
+
+            i = advance(nextCloseBracket, markdown);
+            openParen = markdown.indexOf("(", i);
+
+            i = advance(openParen, markdown);
+            closeParen = markdown.indexOf(")", i);
+
             toReturn.add(markdown.substring(openParen + 1, closeParen));
             currentIndex = closeParen + 1;
+            if(markdown.indexOf("[", currentIndex) == -1){
+                break;
+            }
         }
+
         return toReturn;
     }
     public static void main(String[] args) throws IOException {
