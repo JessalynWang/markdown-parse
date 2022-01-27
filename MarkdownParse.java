@@ -14,7 +14,7 @@ public class MarkdownParse {
         ArrayList<String> toReturn = new ArrayList<>();
         
         int currentIndex = 0;
-        Stack<Character> bracketTracker = new Stack<>();
+        Stack<Character> bracketTracker = new Stack<>(); 
         boolean findLink = false;
         int start = 0;
         int end = 0;
@@ -58,9 +58,13 @@ public class MarkdownParse {
         return toReturn;
     }
     public static void main(String[] args) throws IOException {
+        // take in the first command line arg as the file name to be searched for links.
 		Path fileName = Path.of(args[0]);
+        // read the file contents into a string
 	    String contents = Files.readString(fileName);
+        // run getLinks on the contents of the file
         ArrayList<String> links = getLinks(contents);
+        // print out the links that we found
         System.out.println(links);
     }
 }
