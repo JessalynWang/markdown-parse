@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class MarkdownParse {
-    public static String getLink() {
-        return "";
-    }
 
     public static ArrayList<String> getLinks(String markdown) {
         ArrayList<String> toReturn = new ArrayList<>();
