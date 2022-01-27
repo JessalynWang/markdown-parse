@@ -17,17 +17,20 @@ public class MarkdownParse {
         int end = 0;
         while (currentIndex < markdown.length()) {
             char curr = markdown.charAt(currentIndex);
+            //if an escape char is found, skip it and the 
+            //character it is escaping
             if (curr == '\\') {
                 currentIndex += 2;
                 continue;
             }
-
+            //if we are potentially looking at a link with []
             if (findLink) {
+                // if there arent any other brackets on the bracket tracker
                 if (bracketTracker.isEmpty()) {
                     if (curr == '(') {
                         bracketTracker.push(curr);
                         start = currentIndex;
-                    } else {
+                    } else { //something else came after the ] that wasn't (
                         findLink = false;
                     }
                 } else {
@@ -43,12 +46,16 @@ public class MarkdownParse {
                     bracketTracker.push(curr);
                 } else if (curr == ']') {
                     if (!bracketTracker.isEmpty()) {
-                        bracketTracker.pop();
+                        bracketTracker.clear();
                         findLink = true;
+                    }
+                } else if (curr == '!') {
+                    if (currentIndex < markdown.length() - 1 && markdown.charAt(currentIndex + 1) == '[') {
+                        currentIndex += 2;
                     }
                 }
             }
-
+            // move to next char
             currentIndex++;
         }
 
