@@ -36,7 +36,9 @@ public class MarkdownParse {
                 } else {
                     if (curr == ')') {
                         end = currentIndex;
-                        toReturn.add(markdown.substring(start + 1, end));
+                        if (start + 1 != end) {
+                            toReturn.add(markdown.substring(start + 1, end));
+                        }
                         bracketTracker.pop();
                         findLink = false;
                     }
