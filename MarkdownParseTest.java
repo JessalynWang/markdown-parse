@@ -2,7 +2,6 @@
 import static org.junit.Assert.*;
 import org.junit.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -18,7 +17,7 @@ public class MarkdownParseTest {
     @Test 
     public void addition() {
         // Passes if 2 equals 1 + 1, fails if they are not equal
-        assertEquals(2, 1 + 1);
+        assertEquals(2, 1 + 3);
     }
 
     @Test
