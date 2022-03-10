@@ -1,1 +1,1 @@
-[\[link\]\(\)](this is a link)
+[link](this is a link)

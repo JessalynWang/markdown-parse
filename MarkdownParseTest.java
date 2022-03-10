@@ -41,7 +41,7 @@ public class MarkdownParseTest {
     @Test
     public void TestThree() throws IOException, NoSuchFileException {
         //passes if running Markdown parse returns the correct text for "test-file3.md"
-        List<String> correctOutput = List.of("this is a link");
+        List<String> correctOutput = List.of();
         Path fileName = Path.of("Group-test-file3.md");
         // read the file contents into a string
 	    String contents = Files.readString(fileName);
@@ -54,7 +54,7 @@ public class MarkdownParseTest {
     public void TestFour() throws IOException, NoSuchFileException {
         //passes if running Markdown parse returns the correct text for "test-file4.md"
         
-        List<String> correctOutput = List.of("https://something.com");
+        List<String> correctOutput = List.of("https://something.com", "");
         Path fileName = Path.of("Group-test-file4.md");
         // read the file contents into a string
 	    String contents = Files.readString(fileName);

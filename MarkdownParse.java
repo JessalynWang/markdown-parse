@@ -3,65 +3,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Stack;
+import org.commonmark.node.*;
+import org.commonmark.parser.Parser;
 
 public class MarkdownParse {
 
     public static ArrayList<String> getLinks(String markdown) {
-        ArrayList<String> toReturn = new ArrayList<>();
-        
-        int currentIndex = 0;
-        Stack<Character> bracketTracker = new Stack<>(); 
-        boolean findLink = false;
-        int start = 0;
-        int end = 0;
-        while (currentIndex < markdown.length()) {
-            char curr = markdown.charAt(currentIndex);
-            //if an escape char is found, skip it and the 
-            //character it is escaping
-            if (curr == '\\') {
-                currentIndex += 2;
-                continue;
-            }
-            //if we are potentially looking at a link with []
-            if (findLink) {
-                // if there arent any other brackets on the bracket tracker
-                if (bracketTracker.isEmpty()) {
-                    if (curr == '(') {
-                        bracketTracker.push(curr);
-                        start = currentIndex;
-                    } else { //something else came after the ] that wasn't (
-                        findLink = false;
-                    }
-                } else {
-                    if (curr == ')') {
-                        end = currentIndex;
-                        if (start + 1 != end) {
-                            toReturn.add(markdown.substring(start + 1, end));
-                        }
-                        bracketTracker.pop();
-                        findLink = false;
-                    }
-                }
-            } else {
-                if (curr == '[') {
-                    bracketTracker.push(curr);
-                } else if (curr == ']') {
-                    if (!bracketTracker.isEmpty()) {
-                        bracketTracker.clear();
-                        findLink = true;
-                    }
-                } else if (curr == '!') {
-                    if (currentIndex < markdown.length() - 1 && markdown.charAt(currentIndex + 1) == '[') {
-                        currentIndex += 2;
-                    }
-                }
-            }
-            // move to next char
-            currentIndex++;
-        }
+        Parser parser = Parser.builder().build();
+        Node node = parser.parse(markdown);
 
-        return toReturn;
+        LinkVisitor v = new LinkVisitor();
+        node.accept(v);
+        return v.links;
     }
     public static void main(String[] args) throws IOException {
         // take in the first command line arg as the file name to be searched for links.
@@ -72,5 +25,18 @@ public class MarkdownParse {
         ArrayList<String> links = getLinks(contents);
         // print out the links that we found
         System.out.println(links);
+    }
+}
+
+class LinkVisitor extends AbstractVisitor {
+    ArrayList<String> links = new ArrayList<>();
+    
+    @Override
+    public void visit(Link link) {
+        String l = link.getDestination();
+        
+
+        // Descend into children (could be omitted in this case because Text nodes don't have children).
+        links.add(l);
     }
 }
